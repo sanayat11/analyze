@@ -1,0 +1,189 @@
+:root {
+    --bg-gradient: linear-gradient(180deg, #F4F6FB 0%, #EEF2F8 100%);
+    --surface: #ffffff;
+    --surface-2: #f8fafc;
+    --border: #e2e8f0;
+    --text: #0f172a;
+    --text-muted: #64748b;
+    --input-bg: #ffffff;
+    --input-border: #e2e8f0;
+    --input-placeholder: #94a3b8;
+    --primary: #7c3aed;
+    --primary-hover: #6d28d9;
+    --primary-text: #ffffff;
+    --row-hover: #f1f5f9;
+    
+    --sidebar-w: 260px;
+    --sidebar-w-collapsed: 80px;
+
+    /* Light Theme Badge/Chip Tokens */
+    --chip-blue-bg: rgba(59,130,246,.10);
+    --chip-blue-tx: #1D4ED8;
+    --chip-blue-br: rgba(59,130,246,.18);
+
+    --chip-green-bg: rgba(34,197,94,.12);
+    --chip-green-tx: #15803D;
+    --chip-green-br: rgba(34,197,94,.18);
+
+    --chip-amber-bg: rgba(245,158,11,.14);
+    --chip-amber-tx: #B45309;
+    --chip-amber-br: rgba(245,158,11,.22);
+
+    --chip-red-bg: rgba(239,68,68,.12);
+    --chip-red-tx: #B91C1C;
+    --chip-red-br: rgba(239,68,68,.18);
+
+    --chip-violet-bg: rgba(124,58,237,.10);
+    --chip-violet-tx: #6D28D9;
+    --chip-violet-br: rgba(124,58,237,.18);
+
+    --score-good-bg: rgba(34,197,94,.14);
+    --score-good-tx: #15803D;
+
+    --score-bad-bg: rgba(239,68,68,.14);
+    --score-bad-tx: #B91C1C;
+
+    --score-neutral-bg: rgba(245,158,11,.16);
+    --score-neutral-tx: #B45309;
+}
+
+.dark {
+    --bg-gradient: linear-gradient(180deg, #0f172a 0%, #020617 100%);
+    --surface: #111b2e;
+    --surface-2: #0f172a;
+    --border: rgba(255, 255, 255, 0.10);
+    --text: rgba(255, 255, 255, 0.92);
+    --text-muted: rgba(255, 255, 255, 0.66);
+    --input-bg: rgba(255, 255, 255, 0.06);
+    --input-border: rgba(255, 255, 255, 0.14);
+    --input-placeholder: rgba(255, 255, 255, 0.45);
+    --primary: #7c3aed;
+    --primary-hover: #6d28d9;
+    --primary-text: #ffffff;
+    --row-hover: rgba(255, 255, 255, 0.06);
+
+    /* Dark Theme Badge/Chip Tokens */
+    --chip-blue-bg: rgba(59,130,246,.16);
+    --chip-blue-tx: #93C5FD;
+    --chip-blue-br: rgba(59,130,246,.22);
+
+    --chip-green-bg: rgba(34,197,94,.16);
+    --chip-green-tx: #86EFAC;
+    --chip-green-br: rgba(34,197,94,.22);
+
+    --chip-amber-bg: rgba(245,158,11,.18);
+    --chip-amber-tx: #FCD34D;
+    --chip-amber-br: rgba(245,158,11,.26);
+
+    --chip-red-bg: rgba(239,68,68,.16);
+    --chip-red-tx: #FCA5A5;
+    --chip-red-br: rgba(239,68,68,.24);
+
+    --chip-violet-bg: rgba(124,58,237,.16);
+    --chip-violet-tx: #C4B5FD;
+    --chip-violet-br: rgba(124,58,237,.24);
+
+    --score-good-bg: rgba(34,197,94,.18);
+    --score-good-tx: #86EFAC;
+
+    --score-bad-bg: rgba(239,68,68,.18);
+    --score-bad-tx: #FCA5A5;
+
+    --score-neutral-bg: rgba(245,158,11,.20);
+    --score-neutral-tx: #FCD34D;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-gradient);
+    background-attachment: fixed;
+    color: var(--text);
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    transition: color 0.3s ease;
+    position: relative;
+    min-height: 100vh;
+}
+
+/* Utility Classes */
+.chip { 
+    height: 28px; 
+    padding: 0 10px; 
+    border-radius: 999px; 
+    display: inline-flex; 
+    align-items: center; 
+    justify-content: center; 
+    font-size: 12px; 
+    font-weight: 500; 
+    line-height: 1; 
+    white-space: nowrap; 
+    border: 1px solid transparent; 
+}
+.score { 
+    height: 28px; 
+    min-width: 44px; 
+    padding: 0 10px; 
+    border-radius: 10px; 
+    display: inline-flex; 
+    align-items: center; 
+    justify-content: center; 
+    font-size: 12px; 
+    font-weight: 600; 
+    line-height: 1; 
+}
+.cell-center { display: flex; align-items: center; }
+table td, table th { vertical-align: middle !important; }
+
+/* Chip Color States */
+.chip-blue { background: var(--chip-blue-bg); color: var(--chip-blue-tx); border-color: var(--chip-blue-br); }
+.chip-green { background: var(--chip-green-bg); color: var(--chip-green-tx); border-color: var(--chip-green-br); }
+.chip-amber { background: var(--chip-amber-bg); color: var(--chip-amber-tx); border-color: var(--chip-amber-br); }
+.chip-red { background: var(--chip-red-bg); color: var(--chip-red-tx); border-color: var(--chip-red-br); }
+.chip-violet { background: var(--chip-violet-bg); color: var(--chip-violet-tx); border-color: var(--chip-violet-br); }
+
+/* Score Color States */
+.score-good { background: var(--score-good-bg); color: var(--score-good-tx); }
+.score-bad { background: var(--score-bad-bg); color: var(--score-bad-tx); }
+.score-neutral { background: var(--score-neutral-bg); color: var(--score-neutral-tx); }
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 80% 10%, rgba(124, 58, 237, 0.04) 0%, transparent 40%),
+        radial-gradient(circle at 10% 90%, rgba(124, 58, 237, 0.03) 0%, transparent 30%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+.dark ::-webkit-scrollbar-thumb {
+    background: #334155;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+.sidebar-transition {
+    transition: width 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sidebar-transition {
+        transition: none;
+    }
+}
