@@ -120,38 +120,97 @@ export const AnalyticsPage: React.FC = () => {
       </section>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-500/5 dark:to-indigo-500/5 p-7 rounded-[20px] border border-blue-100 dark:border-blue-900/20 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+
+        <div className="bg-gradient-to-br from-blue-500 to-indigo-600 
+                  dark:from-blue-600 dark:to-indigo-700 
+                  p-7 rounded-[20px] 
+                  border border-blue-400/20 
+                  shadow-lg shadow-blue-500/20 hover:shadow-xl hover:-translate-y-1 
+                  transition-all duration-300">
+
           <div className="flex items-center gap-3 mb-5">
-            <div className="w-10 h-10 bg-white dark:bg-slate-800 rounded-xl flex items-center justify-center shadow-sm text-blue-600">
+            <div className="w-10 h-10 bg-white/20 
+                      rounded-xl flex items-center justify-center 
+                      shadow-sm text-white backdrop-blur-sm">
               <HashtagIcon className="w-5 h-5" />
             </div>
-            <span className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest">{kpis[0]?.title}</span>
+            <span className="text-xs font-bold text-blue-100 
+                       uppercase tracking-widest">
+              {kpis[0]?.title}
+            </span>
           </div>
-          <div className="text-3xl font-extrabold text-slate-900 dark:text-white tabular-nums mb-2">{(kpis[0]?.value as number).toLocaleString()}</div>
-          <div className="text-[11px] font-medium text-slate-500 dark:text-slate-400">{kpis[0]?.description}</div>
+
+          <div className="text-3xl font-extrabold text-white 
+                    tabular-nums mb-2">
+            {(kpis[0]?.value as number).toLocaleString()}
+          </div>
+
+          <div className="text-[11px] font-medium text-blue-100/80">
+            {kpis[0]?.description}
+          </div>
         </div>
 
-        <div className="bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-500/5 dark:to-green-500/5 p-7 rounded-[20px] border border-emerald-100 dark:border-emerald-900/20 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+
+        <div className="bg-gradient-to-br from-emerald-500 to-green-600 
+                  dark:from-emerald-600 dark:to-green-700 
+                  p-7 rounded-[20px] 
+                  border border-emerald-400/20 
+                  shadow-lg shadow-emerald-500/20 hover:shadow-xl hover:-translate-y-1 
+                  transition-all duration-300">
+
           <div className="flex items-center gap-3 mb-5">
-            <div className="w-10 h-10 bg-white dark:bg-slate-800 rounded-xl flex items-center justify-center shadow-sm text-emerald-600">
+            <div className="w-10 h-10 bg-white/20 
+                      rounded-xl flex items-center justify-center 
+                      shadow-sm text-white backdrop-blur-sm">
               <ArrowsRightLeftIcon className="w-5 h-5" />
             </div>
-            <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">{kpis[1]?.title}</span>
+            <span className="text-xs font-bold text-emerald-100 
+                       uppercase tracking-widest">
+              {kpis[1]?.title}
+            </span>
           </div>
-          <div className="text-3xl font-extrabold text-slate-900 dark:text-white tabular-nums mb-2">{kpis[1]?.value}</div>
-          <div className="text-[11px] font-medium text-slate-500 dark:text-slate-400">{kpis[1]?.description}</div>
+
+          <div className="text-3xl font-extrabold text-white 
+                    tabular-nums mb-2">
+            {kpis[1]?.value}
+          </div>
+
+          <div className="text-[11px] font-medium text-emerald-100/80">
+            {kpis[1]?.description}
+          </div>
         </div>
 
-        <div className="bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-500/5 dark:to-violet-500/5 p-7 rounded-[20px] border border-purple-100 dark:border-purple-900/20 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+
+        <div className="bg-gradient-to-br from-purple-500 to-violet-600 
+                  dark:from-purple-600 dark:to-violet-700 
+                  p-7 rounded-[20px] 
+                  border border-purple-400/20 
+                  shadow-lg shadow-purple-500/20 hover:shadow-xl hover:-translate-y-1 
+                  transition-all duration-300">
+
           <div className="flex items-center gap-3 mb-5">
-            <div className="w-10 h-10 bg-white dark:bg-slate-800 rounded-xl flex items-center justify-center shadow-sm text-purple-600">
+            <div className="w-10 h-10 bg-white/20 
+                      rounded-xl flex items-center justify-center 
+                      shadow-sm text-white backdrop-blur-sm">
               <CalendarDaysIcon className="w-5 h-5" />
             </div>
-            <span className="text-xs font-bold text-purple-600 dark:text-purple-400 uppercase tracking-widest">{kpis[2]?.title}</span>
+            <span className="text-xs font-bold text-purple-100 
+                       uppercase tracking-widest">
+              {kpis[2]?.title}
+            </span>
           </div>
-          <div className="text-xl font-bold text-slate-900 dark:text-white mb-2">Последние {kpis[2]?.value}</div>
-          <div className="text-[11px] font-medium text-slate-500 dark:text-slate-400 tabular-nums">{kpis[2]?.description}</div>
+
+          <div className="text-xl font-bold text-white 
+                    mb-2">
+            Последние {kpis[2]?.value}
+          </div>
+
+          <div className="text-[11px] font-medium text-purple-100/80 
+                    tabular-nums">
+            {kpis[2]?.description}
+          </div>
         </div>
+
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

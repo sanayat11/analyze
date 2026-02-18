@@ -88,6 +88,20 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, isMobileMenuOpen, toggle
         )}
       </Link>
 
+      {/* Toggle Button */}
+      <div className={`px-2 mb-2 flex ${isCollapsed ? 'justify-center' : 'ml-2'}`}>
+        <button
+          onClick={toggleSidebar}
+          className="p-2 text-[var(--text-muted)] hover:text-[var(--primary)] hover:bg-[var(--surface-2)] rounded-xl transition-all border border-transparent hover:border-[var(--border)] hover:shadow-sm active:scale-95"
+        >
+          {isCollapsed ? (
+            <ChevronRightIcon className="w-5 h-5" />
+          ) : (
+            <ChevronLeftIcon className="w-5 h-5" />
+          )}
+        </button>
+      </div>
+
       {/* Navigation */}
       <nav className="mt-4 px-4 space-y-1 flex-1 overflow-y-auto custom-scrollbar">
         {navItems.map((item) => (
@@ -138,28 +152,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, isMobileMenuOpen, toggle
               )}
             </NavLink>
 
-            {/* Toggle Button */}
-            {!isCollapsed && (
-              <button
-                onClick={toggleSidebar}
-                className="p-1.5 text-[var(--text-muted)] hover:text-[var(--primary)] hover:bg-[var(--surface-2)] rounded-lg transition-colors ml-2"
-                title="Свернуть меню"
-              >
-                <ChevronLeftIcon className="w-5 h-5" />
-              </button>
-            )}
           </div>
-
-          {/* Collapsed Toggle (Centered below profile) */}
-          {isCollapsed && (
-            <button
-              onClick={toggleSidebar}
-              className="w-full p-3 flex justify-center text-[var(--text-muted)] hover:text-[var(--primary)] hover:bg-[var(--surface-2)] transition-colors border-t border-[var(--border)]"
-              title="Развернуть меню"
-            >
-              <ChevronRightIcon className="w-5 h-5" />
-            </button>
-          )}
         </div>
       </div>
 

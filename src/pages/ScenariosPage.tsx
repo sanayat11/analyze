@@ -66,7 +66,7 @@ export const ScenariosPage: React.FC = () => {
 
           <button
             onClick={() => navigate('/create-scenario')}
-            className="flex items-center gap-2 px-6 py-2.5 text-sm font-bold text-white bg-[var(--primary)] hover:bg-[var(--primary-hover)] rounded-xl transition-all shadow-lg shadow-purple-500/20 active:scale-[0.98]"
+            className="flex items-center gap-2 px-6 py-2.5 text-sm font-bold text-white bg-[var(--primary)] rounded-xl transition-all shadow-lg shadow-purple-500/20 active:scale-[0.98]"
           >
             <PlusIcon className="w-5 h-5" />
             Создать сценарий
