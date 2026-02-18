@@ -21,6 +21,7 @@ const AppRouter: FC = () => {
         <Routes>
             <Route path="/" element={<Navigate to="/calls" replace />} />
             <Route path="/calls" element={<CallingPage />} />
+            <Route path="/calls/:id" element={<CallingPage />} />
             <Route path="/managers" element={<ManagersPage />} />
             <Route path="/managers/:id" element={<ManagerDetailsPage />} />
             <Route path="/clients" element={<ClientsPage />} />

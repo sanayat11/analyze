@@ -9,8 +9,21 @@ import { useFilters } from '@/shared/lib/hooks/useFilters';
 import { usePagination } from '@/shared/lib/hooks/usePagination';
 import { useDebounce } from '@/shared/lib/hooks/useDebounce';
 
+import { useParams, useNavigate } from 'react-router-dom';
+
 export const CallingPage: React.FC = () => {
-    const [selectedCallId, setSelectedCallId] = useState<string | null>(null);
+    const { id } = useParams<{ id: string }>();
+    const navigate = useNavigate();
+    const [selectedCallId, setSelectedCallId] = useState<string | null>(id || null);
+
+    // Update selectedCallId when URL param changes
+    React.useEffect(() => {
+        if (id) {
+            setSelectedCallId(id);
+        } else {
+            setSelectedCallId(null);
+        }
+    }, [id]);
     const { filters, setFilter, resetFilters } = useFilters({
         page: 1,
         limit: 10,
@@ -76,7 +89,7 @@ export const CallingPage: React.FC = () => {
             />
             <CallsTable
                 records={records}
-                onRowClick={setSelectedCallId}
+                onRowClick={(id) => navigate(`/calls/${id}`)}
             />
             <Pagination
                 page={filters.page}
@@ -88,7 +101,10 @@ export const CallingPage: React.FC = () => {
 
             <CallDetailsModal
                 callId={selectedCallId}
-                onClose={() => setSelectedCallId(null)}
+                onClose={() => {
+                    setSelectedCallId(null);
+                    navigate('/calls');
+                }}
             />
         </main>
     );
