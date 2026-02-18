@@ -65,6 +65,7 @@ const App: React.FC = () => {
       <Sidebar
         isCollapsed={isSidebarCollapsed}
         isMobileMenuOpen={isMobileMenuOpen}
+        toggleSidebar={toggleSidebar}
         onLinkClick={() => setIsMobileMenuOpen(false)}
       />
 
@@ -72,7 +73,6 @@ const App: React.FC = () => {
         <Header
           isDarkMode={isDarkMode}
           toggleDarkMode={toggleDarkMode}
-          toggleSidebar={toggleSidebar}
           toggleMobileMenu={toggleMobileMenu}
           isSidebarCollapsed={isSidebarCollapsed}
         />

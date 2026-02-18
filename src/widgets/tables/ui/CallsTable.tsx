@@ -1,5 +1,6 @@
 import React from 'react';
 import { CallRecord } from '@/entities/call/model/types';
+import { formatName } from '@/shared/lib/utils/formatName';
 
 interface CallsTableProps {
     records: CallRecord[];
@@ -77,7 +78,7 @@ const CallsTable: React.FC<CallsTableProps> = ({ records, onRowClick }) => {
                                 <td className="px-6 py-5">
                                     <div className="flex flex-col justify-center">
                                         <span className="text-sm font-bold text-[var(--text)] leading-snug group-hover:text-[var(--primary)] transition-colors cursor-pointer">
-                                            {record.client}
+                                            {formatName(record.client)}
                                         </span>
                                         <span className="text-[10px] text-[var(--text-muted)] mt-1 uppercase tracking-wider font-bold">
                                             #{record.id.padStart(5, '0')}
@@ -100,7 +101,7 @@ const CallsTable: React.FC<CallsTableProps> = ({ records, onRowClick }) => {
                                 </td>
                                 <td className="px-6 py-5">
                                     <div className="cell-center">
-                                        <span className={`chip uppercase tracking-wider ${getStatusBadgeClass(record.status)}`}>
+                                        <span className={`chip ${getStatusBadgeClass(record.status)}`}>
                                             {getStatusLabel(record.status)}
                                         </span>
                                     </div>

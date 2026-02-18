@@ -16,6 +16,7 @@ import { callApi } from '@/entities/call/api/callApi';
 
 import Pagination from '@/features/paginate-entities/ui/Pagination';
 import { usePagination } from '@/shared/lib/hooks/usePagination';
+import { formatName } from '@/shared/lib/utils/formatName';
 
 import UsersTable from '@/widgets/users/ui/UsersTable';
 
@@ -143,9 +144,9 @@ export const AdminPage: React.FC = () => {
               {recentCalls.map((call) => (
                 <tr key={call.id} className="hover:bg-[var(--row-hover)] transition-colors group">
                   <td className="px-8 py-5 text-sm font-medium text-[var(--text-muted)] tabular-nums">{call.id}</td>
-                  <td className="px-8 py-5 text-sm font-bold text-[var(--text)] tabular-nums">{call.client}</td>
+                  <td className="px-8 py-5 text-sm font-bold text-[var(--text)] tabular-nums">{formatName(call.client)}</td>
                   <td className="px-8 py-5">
-                    <span className={`chip ${getStatusBadgeClass(call.status)} h-[24px] px-3 font-bold uppercase tracking-wider`}>
+                    <span className={`chip ${getStatusBadgeClass(call.status)}`}>
                       {getStatusLabel(call.status)}
                     </span>
                   </td>

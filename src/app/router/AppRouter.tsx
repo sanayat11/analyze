@@ -13,6 +13,7 @@ import { CallingPage } from '../../pages/CallsPage';
 import { ProfilePage } from '../../pages/ProfilePage';
 import { NotificationsPage } from '../../pages/NotificationsPage';
 import { ManagerDetailsPage } from '../../pages/ManagerDetailsPage';
+import { CallDetailsPage } from '../../pages/CallDetailsPage';
 
 const AppRouter: FC = () => {
     const navigate = useNavigate();
@@ -21,7 +22,7 @@ const AppRouter: FC = () => {
         <Routes>
             <Route path="/" element={<Navigate to="/calls" replace />} />
             <Route path="/calls" element={<CallingPage />} />
-            <Route path="/calls/:id" element={<CallingPage />} />
+            <Route path="/calls/:id" element={<CallDetailsPage />} />
             <Route path="/managers" element={<ManagersPage />} />
             <Route path="/managers/:id" element={<ManagerDetailsPage />} />
             <Route path="/clients" element={<ClientsPage />} />

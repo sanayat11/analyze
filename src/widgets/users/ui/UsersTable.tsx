@@ -29,12 +29,12 @@ const UsersTable: React.FC<UsersTableProps> = ({ users, onEdit }) => {
                                 <td className="px-8 py-5 text-sm font-medium text-[var(--text-muted)] tabular-nums">{user.id}</td>
                                 <td className="px-8 py-5 text-sm font-bold text-[var(--text)]">{user.username}</td>
                                 <td className="px-8 py-5">
-                                    <span className={`chip ${user.role === 'Админ' ? 'chip-violet' : 'chip-blue'} h-[24px] px-3 font-bold`}>
+                                    <span className={`chip ${user.role === 'Админ' ? 'chip-violet' : 'chip-blue'} px-3`}>
                                         {user.role}
                                     </span>
                                 </td>
                                 <td className="px-8 py-5">
-                                    <span className={`chip ${user.active ? 'chip-green' : 'chip-red'} h-[24px] px-3 font-bold`}>
+                                    <span className={`chip ${user.active ? 'chip-green' : 'chip-red'} px-3`}>
                                         {user.active ? 'Да' : 'Нет'}
                                     </span>
                                 </td>

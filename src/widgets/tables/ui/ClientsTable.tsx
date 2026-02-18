@@ -2,6 +2,7 @@ import React from 'react';
 import { TrashIcon } from '@heroicons/react/24/outline';
 import { Client } from '@/entities/client/model/types';
 import { useNavigate } from 'react-router-dom';
+import { formatName } from '@/shared/lib/utils/formatName';
 
 interface ClientsTableProps {
     clients: Client[];
@@ -61,7 +62,7 @@ const ClientsTable: React.FC<ClientsTableProps> = ({ clients, onDelete }) => {
                                                 onClick={() => navigate(`/clients/${client.id}`)}
                                                 className="font-bold text-[var(--text)] cursor-pointer hover:text-[var(--primary)] transition-colors"
                                             >
-                                                {client.name}
+                                                {formatName(client.name)}
                                             </div>
                                             <div className="text-xs text-[var(--text-muted)] mt-0.5">{client.externalId}</div>
                                         </div>

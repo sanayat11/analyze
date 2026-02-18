@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowLeftIcon, PhoneIcon, ChartBarIcon, CalendarIcon, IdentificationIcon, BuildingOfficeIcon } from '@heroicons/react/24/outline';
+import {
+    PhoneIcon,
+    ChartBarIcon,
+    CalendarIcon,
+    UserIcon,
+} from '@heroicons/react/24/outline';
 import { clientApi } from '@/entities/client/api/clientApi';
 import { callApi } from '@/entities/call/api/callApi';
-
+import { formatName } from '@/shared/lib/utils/formatName';
 
 export const ClientDetailsPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -22,6 +27,46 @@ export const ClientDetailsPage: React.FC = () => {
         enabled: !!client?.name
     });
 
+    const calls = useMemo(() => callsData?.data || [], [callsData]);
+
+    const lastCall = useMemo(() => {
+        if (!calls.length) return null;
+        // Assuming calls are sorted by date desc, or we sort them here
+        return [...calls].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0];
+    }, [calls]);
+
+    const getScoreColorClass = (score: number | null) => {
+        if (score === null) return 'text-[var(--text-muted)]';
+        if (score >= 8.0) return 'text-green-500';
+        if (score >= 6.0) return 'text-amber-500';
+        return 'text-red-500';
+    };
+
+    const getScoreBadgeClass = (score: number | null) => {
+        if (score === null) return 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400';
+        if (score >= 8.0) return 'score-good';
+        if (score >= 6.0) return 'score-neutral';
+        return 'score-bad';
+    };
+
+    const getStatusBadgeClass = (status: string) => {
+        switch (status) {
+            case 'completed': return 'chip-green';
+            case 'transcription_error': return 'chip-red';
+            case 'pending': return 'chip-amber';
+            default: return 'chip-blue';
+        }
+    };
+
+    const getStatusLabel = (status: string) => {
+        switch (status) {
+            case 'completed': return 'АНАЛИЗ ЗАВЕРШЁН';
+            case 'transcription_error': return 'ОШИБКА';
+            case 'pending': return 'В ОБРАБОТКЕ';
+            default: return status.toUpperCase();
+        }
+    };
+
     if (isClientLoading) {
         return <div className="p-8 text-[var(--text-muted)]">Загрузка клиента...</div>;
     }
@@ -30,156 +75,172 @@ export const ClientDetailsPage: React.FC = () => {
         return <div className="p-8 text-red-500">Клиент не найден</div>;
     }
 
-    const calls = callsData?.data || [];
-
-    const getScoreColorClass = (score: number | null) => {
-        if (score === null) return 'text-gray-400';
-        if (score >= 8.0) return 'text-green-500';
-        if (score >= 6.0) return 'text-amber-500';
-        return 'text-red-500';
-    };
-
-    const getStatusColor = (status: string) => {
-        switch (status) {
-            case 'completed': return 'bg-green-100 text-green-700 dark:bg-green-500/10 dark:text-green-400';
-            case 'transcription_error': return 'bg-red-100 text-red-700 dark:bg-red-500/10 dark:text-red-400';
-            case 'pending': return 'bg-yellow-100 text-yellow-700 dark:bg-yellow-500/10 dark:text-yellow-400';
-            default: return 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400';
-        }
-    };
-
-    const getStatusText = (status: string) => {
-        switch (status) {
-            case 'completed': return 'Успешно';
-            case 'transcription_error': return 'Ошибка';
-            case 'pending': return 'В обработке';
-            default: return status;
-        }
-    };
-
     return (
-        <main className="flex-1 p-8 space-y-8 overflow-y-auto">
-            <div className="space-y-6">
-                <button
-                    onClick={() => navigate('/clients')}
-                    className="flex items-center gap-2 text-sm font-bold text-[var(--primary)] hover:translate-x-[-4px] transition-all"
-                >
-                    <ArrowLeftIcon className="w-4 h-4" />
-                    Назад к списку
-                </button>
+        <main className="flex-1 p-8 space-y-8 overflow-y-auto w-full">
+            {/* Header */}
+            <div className="flex flex-col gap-4">
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                        <h1 className="text-3xl font-bold text-[var(--text)]">
+                            Клиент #{client.id}
+                        </h1>
+                        <span className={`chip ${client.funnel === 'warm' ? 'chip-amber' : 'chip-blue'}`}>
+                            {client.funnel === 'warm' ? 'Теплый' : 'Холодный'}
+                        </span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                        <button className="px-4 py-2 text-xs font-bold text-[var(--text)] bg-[var(--surface-2)] hover:bg-[var(--border)] rounded-lg transition-colors">
+                            Bitrix ID
+                        </button>
+                        <button className="px-4 py-2 text-xs font-bold text-white bg-[var(--primary)] hover:bg-[var(--primary-hover)] rounded-lg transition-colors shadow-lg shadow-purple-500/20">
+                            Подробнее
+                        </button>
+                    </div>
+                </div>
+                <div className="text-sm text-[var(--text-muted)] font-medium">
+                    Создан: {client.createdAt}
+                </div>
+            </div>
 
-                <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-6">
-                        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-3xl font-bold text-white shadow-lg shadow-purple-500/30">
-                            {client.avatarLetter}
+            {/* Stats Row */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="bg-[var(--surface)] p-6 rounded-[20px] border border-[var(--border)] shadow-sm">
+                    <div className="flex items-center gap-3 mb-4">
+                        <div className="w-8 h-8 rounded-lg bg-[var(--surface-2)] flex items-center justify-center text-[var(--primary)]">
+                            <PhoneIcon className="w-4 h-4" />
                         </div>
-                        <div>
-                            <h1 className="text-3xl font-bold text-[var(--text)] mb-2">{client.name}</h1>
-                            <div className="flex items-center gap-3">
-                                <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${client.funnel === 'warm'
-                                    ? 'bg-orange-100 text-orange-600 dark:bg-orange-500/10 dark:text-orange-400'
-                                    : 'bg-blue-100 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400'
-                                    }`}>
-                                    {client.funnel === 'warm' ? 'Теплый' : 'Холодный'}
-                                </span>
-                                <span className="text-sm text-[var(--text-muted)]">ID: {client.id}</span>
+                        <span className="text-[10px] font-extrabold text-[var(--text-muted)] uppercase tracking-wider">Всего звонков</span>
+                    </div>
+                    <div className="text-4xl font-bold text-[var(--text)]">{client.callsCount}</div>
+                </div>
+
+                <div className="bg-[var(--surface)] p-6 rounded-[20px] border border-[var(--border)] shadow-sm">
+                    <div className="flex items-center gap-3 mb-4">
+                        <div className="w-8 h-8 rounded-lg bg-[var(--surface-2)] flex items-center justify-center text-emerald-500">
+                            <ChartBarIcon className="w-4 h-4" />
+                        </div>
+                        <span className="text-[10px] font-extrabold text-[var(--text-muted)] uppercase tracking-wider">Средняя оценка</span>
+                    </div>
+                    <div className="text-4xl font-bold text-[var(--text)]">{client.avgScore?.toFixed(1) || '-'}</div>
+                </div>
+
+                <div className="bg-[var(--surface)] p-6 rounded-[20px] border border-[var(--border)] shadow-sm">
+                    <div className="flex items-center gap-3 mb-4">
+                        <div className="w-8 h-8 rounded-lg bg-[var(--surface-2)] flex items-center justify-center text-purple-500">
+                            <CalendarIcon className="w-4 h-4" />
+                        </div>
+                        <span className="text-[10px] font-extrabold text-[var(--text-muted)] uppercase tracking-wider">Последний звонок</span>
+                    </div>
+                    <div className="text-xl font-bold text-[var(--text)]">
+                        {lastCall ? lastCall.date.split(' ')[0] : '-'}
+                    </div>
+                    <div className="text-sm font-medium text-[var(--text-muted)] mt-1">
+                        {lastCall ? lastCall.date.split(' ')[1] : ''}
+                    </div>
+                </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Main Content: Call History */}
+                <div className="lg:col-span-2 space-y-6">
+                    <section className="bg-[var(--surface)] rounded-[20px] border border-[var(--border)] shadow-sm overflow-hidden min-h-[400px]">
+                        <div className="px-8 py-6 border-b border-[var(--border)] bg-[var(--surface-2)]">
+                            <h2 className="text-lg font-bold text-[var(--text)]">История звонков</h2>
+                        </div>
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-left">
+                                <thead>
+                                    <tr className="bg-[var(--surface-2)] border-b border-[var(--border)]">
+                                        <th className="px-8 py-4 text-[10px] font-extrabold text-[var(--text-muted)] uppercase tracking-[0.15em]">ID</th>
+                                        <th className="px-8 py-4 text-[10px] font-extrabold text-[var(--text-muted)] uppercase tracking-[0.15em]">Статус</th>
+                                        <th className="px-8 py-4 text-[10px] font-extrabold text-[var(--text-muted)] uppercase tracking-[0.15em] text-center">Оценка</th>
+                                        <th className="px-8 py-4 text-[10px] font-extrabold text-[var(--text-muted)] uppercase tracking-[0.15em] text-right">Дата</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-[var(--border)]">
+                                    {isCallsLoading ? (
+                                        <tr>
+                                            <td colSpan={4} className="px-8 py-8 text-center text-[var(--text-muted)]">Загрузка...</td>
+                                        </tr>
+                                    ) : calls.length === 0 ? (
+                                        <tr>
+                                            <td colSpan={4} className="px-8 py-8 text-center text-[var(--text-muted)]">Нет звонков</td>
+                                        </tr>
+                                    ) : (
+                                        calls.map((call) => (
+                                            <tr key={call.id} className="hover:bg-[var(--row-hover)] transition-colors group cursor-pointer">
+                                                <td className="px-8 py-5 text-sm font-bold text-[var(--text-muted)] tabular-nums">#{call.id}</td>
+                                                <td className="px-8 py-5">
+                                                    <span className={`chip ${getStatusBadgeClass(call.status)}`}>
+                                                        {getStatusLabel(call.status)}
+                                                    </span>
+                                                </td>
+                                                <td className="px-8 py-5 text-center">
+                                                    {call.score !== null ? (
+                                                        <span className={`score ${getScoreBadgeClass(call.score)}`}>
+                                                            {call.score.toFixed(1)}
+                                                        </span>
+                                                    ) : (
+                                                        <span className="text-[var(--text-muted)] font-bold">—</span>
+                                                    )}
+                                                </td>
+                                                <td className="px-8 py-5 text-right">
+                                                    <div className="flex flex-col items-end">
+                                                        <span className="text-xs font-bold text-[var(--text)] tabular-nums">{call.date.split(' ')[0]}</span>
+                                                        <span className="text-[10px] text-[var(--text-muted)] font-medium tabular-nums">{call.date.split(' ')[1]}</span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+
+                {/* Sidebar */}
+                <div className="space-y-6">
+                    {/* Client Info Card */}
+                    <div className="bg-[var(--surface)] p-6 rounded-[20px] border border-[var(--border)] shadow-sm">
+                        <div className="flex items-center gap-3 mb-6">
+                            <UserIcon className="w-5 h-5 text-emerald-500" />
+                            <h3 className="text-sm font-bold text-[var(--text)]">Информация о клиенте</h3>
+                        </div>
+
+                        <div className="space-y-6">
+                            <div>
+                                <div className="text-[10px] font-extrabold text-[var(--text-muted)] uppercase tracking-wider mb-2">ФИО</div>
+                                <div className="text-sm font-bold text-[var(--text)]">{formatName(client.name)}</div>
+                            </div>
+
+                            <div>
+                                <div className="text-[10px] font-extrabold text-[var(--text-muted)] uppercase tracking-wider mb-2">ИНН</div>
+                                <div className="text-sm font-bold text-[var(--text)] font-mono">{client.inn}</div>
+                            </div>
+
+                            <div>
+                                <div className="text-[10px] font-extrabold text-[var(--text-muted)] uppercase tracking-wider mb-2">Bitrix ID</div>
+                                <div className="bg-[var(--surface-2)] p-2 rounded-lg text-xs font-mono text-[var(--text-muted)] border border-[var(--border)] break-all">
+                                    {client.externalId}
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                </div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="bg-[var(--surface)] p-6 rounded-[20px] border border-[var(--border)] shadow-sm">
-                    <div className="flex items-center gap-3 mb-2">
-                        <PhoneIcon className="w-5 h-5 text-[var(--text-muted)]" />
-                        <span className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider">Всего звонков</span>
-                    </div>
-                    <div className="text-3xl font-bold text-[var(--text)]">{client.callsCount}</div>
-                </div>
-
-                <div className="bg-[var(--surface)] p-6 rounded-[20px] border border-[var(--border)] shadow-sm">
-                    <div className="flex items-center gap-3 mb-2">
-                        <ChartBarIcon className="w-5 h-5 text-[var(--text-muted)]" />
-                        <span className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider">Средняя оценка</span>
-                    </div>
-                    <div className={`text-3xl font-bold ${getScoreColorClass(client.avgScore)}`}>
-                        {client.avgScore?.toFixed(1) || '-'}
-                    </div>
-                </div>
-
-                <div className="bg-[var(--surface)] p-6 rounded-[20px] border border-[var(--border)] shadow-sm">
-                    <div className="flex items-center gap-3 mb-2">
-                        <IdentificationIcon className="w-5 h-5 text-[var(--text-muted)]" />
-                        <span className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider">ИНН</span>
-                    </div>
-                    <div className="text-lg font-bold text-[var(--text)] font-mono">{client.inn || '-'}</div>
-                </div>
-
-                <div className="bg-[var(--surface)] p-6 rounded-[20px] border border-[var(--border)] shadow-sm">
-                    <div className="flex items-center gap-3 mb-2">
-                        <BuildingOfficeIcon className="w-5 h-5 text-[var(--text-muted)]" />
-                        <span className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider">Внешний ID (Bitrix)</span>
-                    </div>
-                    <div className="text-lg font-bold text-[var(--text)]">{client.externalId || '-'}</div>
-                </div>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div className="lg:col-span-2 space-y-6">
-                    <div className="flex items-center justify-between">
-                        <h2 className="text-xl font-bold text-[var(--text)]">История звонков</h2>
-                    </div>
-
-                    {isCallsLoading ? (
-                        <div className="p-8 text-center text-[var(--text-muted)]">Загрузка звонков...</div>
-                    ) : calls.length === 0 ? (
-                        <div className="p-12 text-center bg-[var(--surface)] rounded-[20px] border border-[var(--border)] text-[var(--text-muted)]">
-                            История звонков пуста
-                        </div>
-                    ) : (
-                        <div className="space-y-4">
-                            {calls.map(call => (
-                                <div key={call.id} className="bg-[var(--surface)] p-5 rounded-2xl border border-[var(--border)] hover:shadow-md transition-all group">
-                                    <div className="flex items-center justify-between mb-3">
-                                        <div className="flex items-center gap-3">
-                                            <span className={`px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider ${getStatusColor(call.status)}`}>
-                                                {getStatusText(call.status)}
-                                            </span>
-                                            <span className="text-sm font-medium text-[var(--text-muted)]">{call.date}</span>
-                                        </div>
-                                        <div className={`text-lg font-bold ${getScoreColorClass(call.score)}`}>
-                                            {call.score?.toFixed(1) || '-'}
-                                        </div>
-                                    </div>
-
-                                    <div className="flex items-center justify-between">
-                                        <div>
-                                            <div className="font-bold text-[var(--text)] mb-1">{call.scenario}</div>
-                                            <div className="text-sm text-[var(--text-muted)]">{call.manager} • {call.duration}</div>
-                                        </div>
-
-                                        <button className="px-4 py-2 text-xs font-bold text-[var(--primary)] bg-purple-50 dark:bg-purple-500/10 hover:bg-[var(--primary)] hover:text-white rounded-xl transition-all opacity-0 group-hover:opacity-100">
-                                            Детали
-                                        </button>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </div>
-
-                <div className="space-y-6">
+                    {/* Additional Info Card */}
                     <div className="bg-[var(--surface)] p-6 rounded-[20px] border border-[var(--border)] shadow-sm">
-                        <h3 className="text-sm font-bold text-[var(--text)] uppercase tracking-wider mb-6">Информация</h3>
+                        <div className="text-[10px] font-extrabold text-[var(--text-muted)] uppercase tracking-wider mb-6">Дополнительно</div>
 
-                        <div className="space-y-4">
-                            <div>
-                                <div className="text-xs text-[var(--text-muted)] mb-1">Дата создания</div>
-                                <div className="font-medium text-[var(--text)] flex items-center gap-2">
-                                    <CalendarIcon className="w-4 h-4 text-[var(--text-muted)]" />
-                                    {client.createdAt}
-                                </div>
+                        <div className="space-y-6">
+                            <div className="flex items-center justify-between">
+                                <span className="text-sm font-medium text-[var(--text-muted)]">Активность</span>
+                                <span className="chip chip-green">АКТИВЕН</span>
+                            </div>
+
+                            <div className="flex items-center justify-between">
+                                <span className="text-sm font-medium text-[var(--text-muted)]">Заметок</span>
+                                <span className="text-sm font-bold text-[var(--text)]">0</span>
                             </div>
                         </div>
                     </div>
