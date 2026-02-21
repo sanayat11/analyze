@@ -13,19 +13,26 @@ import {
     ChatBubbleBottomCenterTextIcon,
     Squares2X2Icon,
     LightBulbIcon,
-    ShieldCheckIcon
+    ShieldCheckIcon,
+    PlayIcon,
+    PauseIcon
 } from '@heroicons/react/24/outline';
+import { useState, useRef, useEffect } from 'react';
 
 export const CallDetailsPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
+    const [isPlaying, setIsPlaying] = useState(false);
+    const [currentTime, setCurrentTime] = useState(0);
+    const [duration, setDuration] = useState(0);
+    const audioRef = useRef<HTMLAudioElement | null>(null);
 
-    // Mock Data to match screenshot
     const callData = {
         id: '1627',
+        audioUrl: 'https://creativecallproject.ru/wp-content/uploads/2022/09/1-ITM-Derevlev.mp3', 
         created: '17.02.2026 08:56',
         updated: '17.02.2026 08:58',
-        duration: '93.00 сек',
-        durationMin: '1.6 мин',
+        duration: '207.00 сек',
+        durationMin: '2.5 мин',
         status: 'completed',
         score: 8.0,
         transcription: 'Добрый день...',
@@ -68,6 +75,46 @@ export const CallDetailsPage: React.FC = () => {
         ]
     };
 
+    useEffect(() => {
+        const audio = audioRef.current;
+        if (!audio) return;
+
+        const setAudioData = () => setDuration(audio.duration);
+        const setAudioTime = () => setCurrentTime(audio.currentTime);
+
+        audio.addEventListener('loadeddata', setAudioData);
+        audio.addEventListener('timeupdate', setAudioTime);
+        audio.addEventListener('ended', () => setIsPlaying(false));
+
+        return () => {
+            audio.removeEventListener('loadeddata', setAudioData);
+            audio.removeEventListener('timeupdate', setAudioTime);
+        };
+    }, []);
+
+    const togglePlay = () => {
+        if (!audioRef.current) return;
+        if (isPlaying) {
+            audioRef.current.pause();
+        } else {
+            audioRef.current.play();
+        }
+        setIsPlaying(!isPlaying);
+    };
+
+    const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!audioRef.current) return;
+        const time = Number(e.target.value);
+        audioRef.current.currentTime = time;
+        setCurrentTime(time);
+    };
+
+    const formatTime = (time: number) => {
+        const mins = Math.floor(time / 60);
+        const secs = Math.floor(time % 60);
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
+    };
+
     const getScoreColor = (score: number) => {
         if (score >= 8) return 'text-emerald-500';
         if (score >= 6) return 'text-amber-500';
@@ -82,18 +129,30 @@ export const CallDetailsPage: React.FC = () => {
 
     return (
         <main className="flex-1 p-8 space-y-6 overflow-y-auto w-full">
-            {/* Header */}
+            <audio ref={audioRef} src={callData.audioUrl} />
             <div className="flex flex-col gap-2">
                 <div className="flex items-center justify-between">
                     <h1 className="text-3xl font-bold text-[var(--text)]">Звонок #{callData.id}</h1>
                     <div className="flex items-center gap-3">
+                        <button
+                            onClick={togglePlay}
+                            className={`px-4 py-2 text-sm font-bold text-white rounded-lg flex items-center gap-2 transition-all shadow-lg shadow-purple-500/20 ${isPlaying ? 'bg-amber-500 hover:bg-amber-600' : 'bg-purple-600 hover:bg-purple-700'}`}
+                        >
+                            {isPlaying ? (
+                                <>
+                                    <PauseIcon className="w-5 h-5" />
+                                    Пауза
+                                </>
+                            ) : (
+                                <>
+                                    <PlayIcon className="w-5 h-5" />
+                                    Воспроизвести
+                                </>
+                            )}
+                        </button>
                         <button className="px-4 py-2 text-sm font-bold text-white bg-purple-600 hover:bg-purple-700 rounded-lg flex items-center gap-2 transition-colors shadow-lg shadow-purple-500/20">
                             <ArrowPathIcon className="w-4 h-4" />
                             Реанализ
-                        </button>
-                        <button className="px-4 py-2 text-sm font-bold text-[var(--text)] bg-[var(--surface-2)] hover:bg-[var(--border)] rounded-lg flex items-center gap-2 transition-colors">
-                            <CodeBracketIcon className="w-4 h-4" />
-                            JSON анализа
                         </button>
                         <button className="px-4 py-2 text-sm font-bold text-[var(--text)] bg-[var(--surface-2)] hover:bg-[var(--border)] rounded-lg flex items-center gap-2 transition-colors">
                             <DocumentTextIcon className="w-4 h-4" />
@@ -110,12 +169,33 @@ export const CallDetailsPage: React.FC = () => {
                     <span>•</span>
                     <span>ОБНОВЛЕН: {callData.updated}</span>
                 </div>
+
+                <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-4 flex items-center gap-4 shadow-sm">
+                    <button
+                        onClick={togglePlay}
+                        className="w-10 h-10 rounded-full bg-[var(--primary)] text-white flex items-center justify-center hover:scale-105 transition-transform shrink-0"
+                    >
+                        {isPlaying ? <PauseIcon className="w-5 h-5" /> : <PlayIcon className="ml-0.5 w-5 h-5" />}
+                    </button>
+                    <div className="flex-1 space-y-1">
+                        <div className="flex items-center justify-between text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">
+                            <span>{formatTime(currentTime)}</span>
+                            <span>{formatTime(duration)}</span>
+                        </div>
+                        <input
+                            type="range"
+                            min={0}
+                            max={duration}
+                            value={currentTime}
+                            onChange={handleSeek}
+                            className="w-full h-1.5 bg-[var(--surface-2)] rounded-full appearance-none cursor-pointer accent-[var(--primary)]"
+                        />
+                    </div>
+                </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Left Column (2/3) */}
                 <div className="lg:col-span-2 space-y-6">
-                    {/* Call Info Card */}
                     <section className="bg-[var(--surface)] rounded-[24px] border border-[var(--border)] p-8 shadow-sm">
                         <div className="flex items-center justify-between mb-8">
                             <h2 className="text-xl font-bold text-[var(--text)]">Информация о звонке</h2>

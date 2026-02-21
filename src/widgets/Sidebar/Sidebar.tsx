@@ -8,7 +8,7 @@ import {
   DocumentTextIcon,
   ChartBarIcon,
   Cog6ToothIcon,
-  ChevronLeftIcon,
+  XMarkIcon,
   ChevronRightIcon,
 } from '@heroicons/react/24/outline';
 
@@ -28,7 +28,7 @@ const styles = {
     ${isMobileMenuOpen ? 'translate-x-0 w-[260px] fixed' : '-translate-x-full md:relative'}
   `,
   logoLink: (isCollapsed: boolean) => `
-    p-8 flex items-center ${isCollapsed ? 'justify-center' : 'gap-3'} transition-all shrink-0 hover:opacity-80
+    flex items-center ${isCollapsed ? 'justify-center' : 'gap-3'} transition-all shrink-0 hover:opacity-80
   `,
   logoIconWrapper: `
     w-9 h-9 bg-[var(--primary)] rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/20 shrink-0
@@ -76,33 +76,35 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, isMobileMenuOpen, toggle
       className={styles.container(isMobileMenuOpen)}
     >
 
-      {/* Logo */}
-      <Link to="/" className={styles.logoLink(isCollapsed)}>
-        <div className={styles.logoIconWrapper}>
-          <PhoneIcon className="w-5 h-5 text-white" />
-        </div>
-        {!isCollapsed && (
-          <span className={styles.logoText}>
-            Analyzer<span className="text-[var(--primary)]">AI</span>
-          </span>
-        )}
-      </Link>
+      {/* Header */}
+      <div className="relative flex flex-col p-4 mb-2">
+        <Link to="/" className={styles.logoLink(isCollapsed)}>
+          <div className={styles.logoIconWrapper}>
+            <PhoneIcon className="w-5 h-5 text-white" />
+          </div>
+          {!isCollapsed && (
+            <span className={styles.logoText}>
+              Analyzer<span className="text-[var(--primary)]">AI</span>
+            </span>
+          )}
+        </Link>
 
-      {/* Toggle Button */}
-      <div className={`px-2 mb-2 flex ${isCollapsed ? 'justify-center' : 'ml-2'}`}>
+        {/* Toggle Button */}
         <button
           onClick={toggleSidebar}
-          className="p-2 text-[var(--text-muted)] hover:text-[var(--primary)] hover:bg-[var(--surface-2)] rounded-xl transition-all border border-transparent hover:border-[var(--border)] hover:shadow-sm active:scale-95"
+          className={`
+            p-2 text-[var(--text-muted)] hover:text-[var(--primary)] hover:bg-[var(--surface-2)] rounded-xl transition-all border border-transparent hover:border-[var(--border)] hover:shadow-sm active:scale-95
+            ${isCollapsed ? 'mt-10 self-center' : 'absolute top-4 right-4'}
+          `}
         >
           {isCollapsed ? (
             <ChevronRightIcon className="w-5 h-5" />
           ) : (
-            <ChevronLeftIcon className="w-5 h-5" />
+            <XMarkIcon className="w-5 h-5" />
           )}
         </button>
       </div>
 
-      {/* Navigation */}
       <nav className="mt-4 px-4 space-y-1 flex-1 overflow-y-auto custom-scrollbar">
         {navItems.map((item) => (
           <NavLink

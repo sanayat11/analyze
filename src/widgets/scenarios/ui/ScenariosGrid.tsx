@@ -100,7 +100,6 @@ const ScenariosGrid: React.FC<ScenariosGridProps> = ({ scenarios, onDelete, onEd
                         </div>
                     </div>
 
-                    {/* Prompt */}
                     <div className="mb-8">
                         <div className="flex items-center gap-2 mb-3">
                             <CommandLineIcon className="w-4 h-4 text-[var(--text-muted)]" />

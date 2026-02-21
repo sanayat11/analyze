@@ -199,7 +199,6 @@ const ScenarioForm: React.FC<ScenarioFormProps> = ({ initialData, onSubmit, onCa
                 </div>
             </section>
 
-            {/* Form Actions */}
             <div className="flex items-center justify-end gap-4 pt-4">
                 <button
                     type="button"
