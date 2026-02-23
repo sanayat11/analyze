@@ -25,7 +25,8 @@ export const ClientsPage: React.FC = () => {
     search: '',
     inn: '',
     externalId: '',
-    funnel: ''
+    funnel: '',
+    category: ''
   });
 
   const debouncedSearch = useDebounce(filters.search, 500);
@@ -40,7 +41,8 @@ export const ClientsPage: React.FC = () => {
         search: debouncedSearch,
         inn: debouncedInn,
         externalId: debouncedExternalId,
-        funnel: filters.funnel
+        funnel: filters.funnel,
+        category: filters.category
       }
     }),
     placeholderData: (previousData) => previousData
@@ -86,8 +88,8 @@ export const ClientsPage: React.FC = () => {
       </div>
 
       <section className="bg-[var(--surface)] p-8 rounded-[20px] shadow-sm border border-[var(--border)] transition-all duration-300">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-          <div className="flex flex-col">
+        <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+          <div className="flex flex-col md:col-span-2">
             <label className={labelStyle}>Поиск</label>
             <div className="relative">
               <MagnifyingGlassIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)]" />
@@ -100,27 +102,7 @@ export const ClientsPage: React.FC = () => {
               />
             </div>
           </div>
-          <div className="flex flex-col">
-            <label className={labelStyle}>ИНН</label>
-            <input
-              type="text"
-              placeholder="Введите ИНН"
-              className={inputStyle}
-              value={filters.inn}
-              onChange={(e) => setFilter('inn', e.target.value)}
-            />
-          </div>
-          <div className="flex flex-col">
-            <label className={labelStyle}>Bitrix ID</label>
-            <input
-              type="text"
-              placeholder="Введите Bitrix ID"
-              className={inputStyle}
-              value={filters.externalId}
-              onChange={(e) => setFilter('externalId', e.target.value)}
-            />
-          </div>
-          <div className="flex flex-col">
+          <div className="flex flex-col md:col-span-1">
             <label className={labelStyle}>Воронка</label>
             <div className="relative">
               <Select
@@ -135,7 +117,33 @@ export const ClientsPage: React.FC = () => {
               />
             </div>
           </div>
-          <div className="flex flex-col">
+          <div className="flex flex-col md:col-span-1">
+            <label className={labelStyle}>Категория</label>
+            <div className="relative">
+              <Select
+                value={filters.category}
+                onChange={(val) => setFilter('category', val)}
+                options={[
+                  { value: '', label: 'Все категории' },
+                  { value: 'large', label: 'Крупный' },
+                  { value: 'medium', label: 'Средний' },
+                  { value: 'small', label: 'Мелкий' },
+                ]}
+                placeholder="Выберите категорию"
+              />
+            </div>
+          </div>
+          <div className="flex flex-col md:col-span-1">
+            <label className={labelStyle}>ИНН</label>
+            <input
+              type="text"
+              placeholder="Введите ИНН"
+              className={inputStyle}
+              value={filters.inn}
+              onChange={(e) => setFilter('inn', e.target.value)}
+            />
+          </div>
+          <div className="flex flex-col md:col-span-1">
             <label className={labelStyle}>На странице</label>
             <div className="relative">
               <Select

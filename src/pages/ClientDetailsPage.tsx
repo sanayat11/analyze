@@ -67,6 +67,29 @@ export const ClientDetailsPage: React.FC = () => {
         }
     };
 
+    const getCategoryBadgeClass = (category: string) => {
+        switch (category) {
+            case 'large': return 'chip-purple';
+            case 'medium': return 'chip-amber';
+            case 'small': return 'chip-green';
+            default: return 'chip-blue';
+        }
+    };
+
+    const getCategoryLabel = (category: string) => {
+        switch (category) {
+            case 'large': return 'Крупный';
+            case 'medium': return 'Средний';
+            case 'small': return 'Мелкий';
+            default: return category;
+        }
+    };
+
+    const firstCall = useMemo(() => {
+        if (!calls.length) return null;
+        return [...calls].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())[0];
+    }, [calls]);
+
     if (isClientLoading) {
         return <div className="p-8 text-[var(--text-muted)]">Загрузка клиента...</div>;
     }
@@ -84,9 +107,16 @@ export const ClientDetailsPage: React.FC = () => {
                         <h1 className="text-3xl font-bold text-[var(--text)]">
                             Клиент #{client.id}
                         </h1>
-                        <span className={`chip ${client.funnel === 'warm' ? 'chip-amber' : 'chip-blue'}`}>
-                            {client.funnel === 'warm' ? 'Теплый' : 'Холодный'}
-                        </span>
+                        <div className="flex items-center gap-2">
+                            <span className={`chip ${client.funnel === 'warm' ? 'chip-amber' : 'chip-blue'}`}>
+                                {client.funnel === 'warm' ? 'Теплый' : 'Холодный'}
+                            </span>
+                            {client.category && (
+                                <span className={`chip ${getCategoryBadgeClass(client.category)}`}>
+                                    {getCategoryLabel(client.category)}
+                                </span>
+                            )}
+                        </div>
                     </div>
                     <div className="flex items-center gap-3">
                         <button className="px-4 py-2 text-xs font-bold text-[var(--text)] bg-[var(--surface-2)] hover:bg-[var(--border)] rounded-lg transition-colors">
@@ -102,47 +132,38 @@ export const ClientDetailsPage: React.FC = () => {
                 </div>
             </div>
 
-            {/* Stats Row */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-[var(--surface)] p-6 rounded-[20px] border border-[var(--border)] shadow-sm">
-                    <div className="flex items-center gap-3 mb-4">
-                        <div className="w-8 h-8 rounded-lg bg-[var(--surface-2)] flex items-center justify-center text-[var(--primary)]">
-                            <PhoneIcon className="w-4 h-4" />
-                        </div>
-                        <span className="text-[10px] font-extrabold text-[var(--text-muted)] uppercase tracking-wider">Всего звонков</span>
-                    </div>
-                    <div className="text-4xl font-bold text-[var(--text)]">{client.callsCount}</div>
-                </div>
-
-                <div className="bg-[var(--surface)] p-6 rounded-[20px] border border-[var(--border)] shadow-sm">
-                    <div className="flex items-center gap-3 mb-4">
-                        <div className="w-8 h-8 rounded-lg bg-[var(--surface-2)] flex items-center justify-center text-emerald-500">
-                            <ChartBarIcon className="w-4 h-4" />
-                        </div>
-                        <span className="text-[10px] font-extrabold text-[var(--text-muted)] uppercase tracking-wider">Средняя оценка</span>
-                    </div>
-                    <div className="text-4xl font-bold text-[var(--text)]">{client.avgScore?.toFixed(1) || '-'}</div>
-                </div>
-
-                <div className="bg-[var(--surface)] p-6 rounded-[20px] border border-[var(--border)] shadow-sm">
-                    <div className="flex items-center gap-3 mb-4">
-                        <div className="w-8 h-8 rounded-lg bg-[var(--surface-2)] flex items-center justify-center text-purple-500">
-                            <CalendarIcon className="w-4 h-4" />
-                        </div>
-                        <span className="text-[10px] font-extrabold text-[var(--text-muted)] uppercase tracking-wider">Последний звонок</span>
-                    </div>
-                    <div className="text-xl font-bold text-[var(--text)]">
-                        {lastCall ? lastCall.date.split(' ')[0] : '-'}
-                    </div>
-                    <div className="text-sm font-medium text-[var(--text-muted)] mt-1">
-                        {lastCall ? lastCall.date.split(' ')[1] : ''}
-                    </div>
-                </div>
-            </div>
-
+            {/* Main Layout Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Main Content: Call History */}
+                {/* Main Content (Left 2/3) */}
                 <div className="lg:col-span-2 space-y-6">
+                    {/* Client Info Card */}
+                    <div className="bg-[var(--surface)] p-6 rounded-[20px] border border-[var(--border)] shadow-sm">
+                        <div className="flex items-center gap-3 mb-6">
+                            <UserIcon className="w-5 h-5 text-emerald-500" />
+                            <h3 className="text-sm font-bold text-[var(--text)]">Информация о клиенте</h3>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div>
+                                <div className="text-[10px] font-extrabold text-[var(--text-muted)] uppercase tracking-wider mb-2">ФИО</div>
+                                <div className="text-sm font-bold text-[var(--text)]">{formatName(client.name)}</div>
+                            </div>
+
+                            <div>
+                                <div className="text-[10px] font-extrabold text-[var(--text-muted)] uppercase tracking-wider mb-2">ИНН</div>
+                                <div className="text-sm font-bold text-[var(--text)] font-mono">{client.inn}</div>
+                            </div>
+
+                            <div>
+                                <div className="text-[10px] font-extrabold text-[var(--text-muted)] uppercase tracking-wider mb-2">Bitrix ID</div>
+                                <div className="bg-[var(--surface-2)] p-2 rounded-lg text-xs font-mono text-[var(--text-muted)] border border-[var(--border)] break-all w-fit">
+                                    {client.externalId}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Call History */}
                     <section className="bg-[var(--surface)] rounded-[20px] border border-[var(--border)] shadow-sm overflow-hidden min-h-[400px]">
                         <div className="px-8 py-6 border-b border-[var(--border)] bg-[var(--surface-2)]">
                             <h2 className="text-lg font-bold text-[var(--text)]">История звонков</h2>
@@ -199,32 +220,56 @@ export const ClientDetailsPage: React.FC = () => {
                     </section>
                 </div>
 
-                {/* Sidebar */}
+                {/* Sidebar (Right 1/3) */}
                 <div className="space-y-6">
-                    {/* Client Info Card */}
+                    {/* Stats */}
                     <div className="bg-[var(--surface)] p-6 rounded-[20px] border border-[var(--border)] shadow-sm">
-                        <div className="flex items-center gap-3 mb-6">
-                            <UserIcon className="w-5 h-5 text-emerald-500" />
-                            <h3 className="text-sm font-bold text-[var(--text)]">Информация о клиенте</h3>
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className="w-8 h-8 rounded-lg bg-[var(--surface-2)] flex items-center justify-center text-[var(--primary)]">
+                                <PhoneIcon className="w-4 h-4" />
+                            </div>
+                            <span className="text-[10px] font-extrabold text-[var(--text-muted)] uppercase tracking-wider">Всего звонков</span>
                         </div>
+                        <div className="text-4xl font-bold text-[var(--text)]">{client.callsCount}</div>
+                    </div>
 
-                        <div className="space-y-6">
-                            <div>
-                                <div className="text-[10px] font-extrabold text-[var(--text-muted)] uppercase tracking-wider mb-2">ФИО</div>
-                                <div className="text-sm font-bold text-[var(--text)]">{formatName(client.name)}</div>
+                    <div className="bg-[var(--surface)] p-6 rounded-[20px] border border-[var(--border)] shadow-sm">
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className="w-8 h-8 rounded-lg bg-[var(--surface-2)] flex items-center justify-center text-emerald-500">
+                                <ChartBarIcon className="w-4 h-4" />
                             </div>
+                            <span className="text-[10px] font-extrabold text-[var(--text-muted)] uppercase tracking-wider">Средняя оценка</span>
+                        </div>
+                        <div className="text-4xl font-bold text-[var(--text)]">{client.avgScore?.toFixed(1) || '-'}</div>
+                    </div>
 
-                            <div>
-                                <div className="text-[10px] font-extrabold text-[var(--text-muted)] uppercase tracking-wider mb-2">ИНН</div>
-                                <div className="text-sm font-bold text-[var(--text)] font-mono">{client.inn}</div>
+                    <div className="bg-[var(--surface)] p-6 rounded-[20px] border border-[var(--border)] shadow-sm">
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className="w-8 h-8 rounded-lg bg-[var(--surface-2)] flex items-center justify-center text-purple-500">
+                                <CalendarIcon className="w-4 h-4" />
                             </div>
+                            <span className="text-[10px] font-extrabold text-[var(--text-muted)] uppercase tracking-wider">Последний звонок</span>
+                        </div>
+                        <div className="text-xl font-bold text-[var(--text)]">
+                            {lastCall ? lastCall.date.split(' ')[0] : '-'}
+                        </div>
+                        <div className="text-sm font-medium text-[var(--text-muted)] mt-1">
+                            {lastCall ? lastCall.date.split(' ')[1] : ''}
+                        </div>
+                    </div>
 
-                            <div>
-                                <div className="text-[10px] font-extrabold text-[var(--text-muted)] uppercase tracking-wider mb-2">Bitrix ID</div>
-                                <div className="bg-[var(--surface-2)] p-2 rounded-lg text-xs font-mono text-[var(--text-muted)] border border-[var(--border)] break-all">
-                                    {client.externalId}
-                                </div>
+                    <div className="bg-[var(--surface)] p-6 rounded-[20px] border border-[var(--border)] shadow-sm">
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className="w-8 h-8 rounded-lg bg-[var(--surface-2)] flex items-center justify-center text-blue-500">
+                                <CalendarIcon className="w-4 h-4" />
                             </div>
+                            <span className="text-[10px] font-extrabold text-[var(--text-muted)] uppercase tracking-wider">Дата первого касания</span>
+                        </div>
+                        <div className="text-xl font-bold text-[var(--text)]">
+                            {firstCall ? firstCall.date.split(' ')[0] : '-'}
+                        </div>
+                        <div className="text-sm font-medium text-[var(--text-muted)] mt-1">
+                            {firstCall ? firstCall.date.split(' ')[1] : ''}
                         </div>
                     </div>
 

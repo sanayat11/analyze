@@ -24,6 +24,24 @@ const ClientsTable: React.FC<ClientsTableProps> = ({ clients, onDelete }) => {
         return funnel === 'warm' ? 'Теплый' : 'Холодный';
     };
 
+    const getCategoryBadgeClass = (category: 'large' | 'medium' | 'small') => {
+        switch (category) {
+            case 'large': return 'chip-purple';
+            case 'medium': return 'chip-amber';
+            case 'small': return 'chip-green';
+            default: return 'chip-blue';
+        }
+    };
+
+    const getCategoryLabel = (category: 'large' | 'medium' | 'small') => {
+        switch (category) {
+            case 'large': return 'Крупный';
+            case 'medium': return 'Средний';
+            case 'small': return 'Мелкий';
+            default: return category;
+        }
+    };
+
     const getScoreChipStyle = (score: number | null) => {
         if (score === null) return 'text-slate-300 dark:text-slate-700 font-bold';
         if (score >= 8.0) return 'score-good';
@@ -39,6 +57,7 @@ const ClientsTable: React.FC<ClientsTableProps> = ({ clients, onDelete }) => {
                         <tr className="bg-[var(--surface-2)] border-b border-[var(--border)]">
                             <th className="px-6 py-4 text-[10px] font-extrabold text-[var(--text-muted)] uppercase tracking-[0.15em] min-w-[280px]">Клиент ↑</th>
                             <th className="px-6 py-4 text-[10px] font-extrabold text-[var(--text-muted)] uppercase tracking-[0.15em]">ИНН</th>
+                            <th className="px-6 py-4 text-[10px] font-extrabold text-[var(--text-muted)] uppercase tracking-[0.15em]">Категория</th>
                             <th className="px-6 py-4 text-[10px] font-extrabold text-[var(--text-muted)] uppercase tracking-[0.15em]">Воронка</th>
                             <th className="px-6 py-4 text-[10px] font-extrabold text-[var(--text-muted)] uppercase tracking-[0.15em]">Звонки</th>
                             <th className="px-6 py-4 text-[10px] font-extrabold text-[var(--text-muted)] uppercase tracking-[0.15em] text-center">Оценка</th>
@@ -70,6 +89,13 @@ const ClientsTable: React.FC<ClientsTableProps> = ({ clients, onDelete }) => {
                                 </td>
                                 <td className="px-6 py-5 text-sm font-medium text-[var(--text)] tabular-nums">
                                     {client.inn}
+                                </td>
+                                <td className="px-6 py-5">
+                                    <div className="cell-center">
+                                        <span className={`chip ${getCategoryBadgeClass(client.category)}`}>
+                                            {getCategoryLabel(client.category)}
+                                        </span>
+                                    </div>
                                 </td>
                                 <td className="px-6 py-5">
                                     <div className="cell-center">

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import {
     PhoneIcon,
     UserIcon,
@@ -21,14 +21,26 @@ import { useState, useRef, useEffect } from 'react';
 
 export const CallDetailsPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
+    const navigate = useNavigate();
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
+    const [playbackRate, setPlaybackRate] = useState(1);
     const audioRef = useRef<HTMLAudioElement | null>(null);
+
+    const speeds = [0.5, 1, 1.5, 2];
+
+    const cyclePlaybackRate = () => {
+        const nextSpeed = speeds[(speeds.indexOf(playbackRate) + 1) % speeds.length];
+        setPlaybackRate(nextSpeed);
+        if (audioRef.current) {
+            audioRef.current.playbackRate = nextSpeed;
+        }
+    };
 
     const callData = {
         id: '1627',
-        audioUrl: 'https://creativecallproject.ru/wp-content/uploads/2022/09/1-ITM-Derevlev.mp3', 
+        audioUrl: 'https://creativecallproject.ru/wp-content/uploads/2022/09/1-ITM-Derevlev.mp3',
         created: '17.02.2026 08:56',
         updated: '17.02.2026 08:58',
         duration: '207.00 сек',
@@ -37,17 +49,19 @@ export const CallDetailsPage: React.FC = () => {
         score: 8.0,
         transcription: 'Добрый день...',
         client: {
-            name: 'Омельяненко Александр Петрович',
-            inn: '434524400613',
-            funnel: 'холодный',
-            bitrixId: 'externalCall.5f4a49479b6a1803406c903ec2efda5a.1771318474'
+            id: '172970',
+            name: 'АКМАНОВ Денис Андреевич',
+            inn: '344101135580',
+            funnel: 'тёплый',
+            bitrixId: '172970'
         },
         manager: {
-            name: 'Жумалиев Адилет Алмасович (псевдоним Руслан)',
-            email: '6au.consulting@mail.ru',
-            role: 'МОП',
-            avgScore: 7.4,
-            callsAnalyzed: 58,
+            id: '1',
+            name: 'Смирнов Алексей',
+            email: 'smirnov@test.ru',
+            role: 'Менеджер по продажам',
+            avgScore: 8.7,
+            callsAnalyzed: 120,
             isActive: true
         },
         aiAnalysis: {
@@ -191,6 +205,13 @@ export const CallDetailsPage: React.FC = () => {
                             className="w-full h-1.5 bg-[var(--surface-2)] rounded-full appearance-none cursor-pointer accent-[var(--primary)]"
                         />
                     </div>
+                    <button
+                        onClick={cyclePlaybackRate}
+                        className="px-3 py-1.5 text-xs font-bold text-[var(--primary)] bg-[var(--primary)]/10 hover:bg-[var(--primary)]/20 rounded-lg transition-colors shrink-0 min-w-[3rem]"
+                        title="Скорость воспроизведения"
+                    >
+                        {playbackRate}x
+                    </button>
                 </div>
             </div>
 
@@ -360,7 +381,10 @@ export const CallDetailsPage: React.FC = () => {
                                 <button className="w-full py-2.5 text-xs font-bold text-[var(--text)] bg-[var(--surface-2)] hover:bg-[var(--border)] rounded-xl transition-colors">
                                     Bitrix
                                 </button>
-                                <button className="w-full py-2.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-colors shadow-lg shadow-blue-500/20">
+                                <button
+                                    onClick={() => navigate(`/clients/${callData.client.id}`)}
+                                    className="w-full py-2.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-colors shadow-lg shadow-blue-500/20"
+                                >
                                     Подробнее
                                 </button>
                             </div>
@@ -411,7 +435,10 @@ export const CallDetailsPage: React.FC = () => {
                                 <span className="chip chip-green">АКТИВЕН</span>
                             </div>
 
-                            <button className="w-full py-3 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-colors shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2">
+                            <button
+                                onClick={() => navigate(`/managers/${callData.manager.id}`)}
+                                className="w-full py-3 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-colors shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2"
+                            >
                                 <ChartBarIcon className="w-5 h-5" />
                                 Статистика МОП
                             </button>

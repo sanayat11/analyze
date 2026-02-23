@@ -30,7 +30,7 @@ const Header: React.FC<HeaderProps> = ({ isDarkMode, toggleDarkMode, toggleMobil
     return detailPatterns.some(pattern => pattern.test(location.pathname));
   }, [location.pathname]);
   return (
-    <header className="h-20 bg-[var(--surface)] border-b border-[var(--border)] flex items-center justify-between px-8 sticky top-0 z-10 transition-colors duration-300">
+    <header className="h-14 bg-[var(--surface)] border-b border-[var(--border)] flex items-center justify-between px-8 sticky top-0 z-10 transition-colors duration-300">
       <div className="flex items-center gap-4">
         <button
           onClick={toggleMobileMenu}
