@@ -6,6 +6,7 @@ import {
     ChartBarIcon,
     CalendarIcon,
     UserIcon,
+    ArrowLeftIcon,
 } from '@heroicons/react/24/outline';
 import { clientApi } from '@/entities/client/api/clientApi';
 import { callApi } from '@/entities/call/api/callApi';
@@ -100,6 +101,14 @@ export const ClientDetailsPage: React.FC = () => {
 
     return (
         <main className="flex-1 p-8 space-y-8 overflow-y-auto w-full">
+            <button
+                onClick={() => navigate(-1)}
+                className="flex items-center gap-2 text-sm font-bold text-[var(--text-muted)] hover:text-[var(--primary)] transition-colors w-fit group"
+            >
+                <ArrowLeftIcon className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+                Назад к списку
+            </button>
+
             {/* Header */}
             <div className="flex flex-col gap-4">
                 <div className="flex items-center justify-between">

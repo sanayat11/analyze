@@ -81,6 +81,14 @@ export const ManagerDetailsPage: React.FC = () => {
 
     return (
         <main className="flex-1 p-8 space-y-8 overflow-y-auto">
+            <button
+                onClick={() => navigate(-1)}
+                className="flex items-center gap-2 text-sm font-bold text-[var(--text-muted)] hover:text-[var(--primary)] transition-colors w-fit group"
+            >
+                <ArrowLeftIcon className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+                Назад к списку
+            </button>
+
             <div className="space-y-6">
 
                 <div className="flex items-start justify-between">

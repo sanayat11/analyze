@@ -15,7 +15,8 @@ import {
     LightBulbIcon,
     ShieldCheckIcon,
     PlayIcon,
-    PauseIcon
+    PauseIcon,
+    ArrowLeftIcon
 } from '@heroicons/react/24/outline';
 import { useState, useRef, useEffect } from 'react';
 
@@ -143,27 +144,19 @@ export const CallDetailsPage: React.FC = () => {
 
     return (
         <main className="flex-1 p-8 space-y-6 overflow-y-auto w-full">
+            <button
+                onClick={() => navigate(-1)}
+                className="flex items-center gap-2 text-sm font-bold text-[var(--text-muted)] hover:text-[var(--primary)] transition-colors w-fit group"
+            >
+                <ArrowLeftIcon className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+                Назад к списку
+            </button>
             <audio ref={audioRef} src={callData.audioUrl} />
             <div className="flex flex-col gap-2">
                 <div className="flex items-center justify-between">
                     <h1 className="text-3xl font-bold text-[var(--text)]">Звонок #{callData.id}</h1>
                     <div className="flex items-center gap-3">
-                        <button
-                            onClick={togglePlay}
-                            className={`px-4 py-2 text-sm font-bold text-white rounded-lg flex items-center gap-2 transition-all shadow-lg shadow-purple-500/20 ${isPlaying ? 'bg-amber-500 hover:bg-amber-600' : 'bg-purple-600 hover:bg-purple-700'}`}
-                        >
-                            {isPlaying ? (
-                                <>
-                                    <PauseIcon className="w-5 h-5" />
-                                    Пауза
-                                </>
-                            ) : (
-                                <>
-                                    <PlayIcon className="w-5 h-5" />
-                                    Воспроизвести
-                                </>
-                            )}
-                        </button>
+
                         <button className="px-4 py-2 text-sm font-bold text-white bg-purple-600 hover:bg-purple-700 rounded-lg flex items-center gap-2 transition-colors shadow-lg shadow-purple-500/20">
                             <ArrowPathIcon className="w-4 h-4" />
                             Реанализ
