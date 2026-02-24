@@ -132,30 +132,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, isMobileMenuOpen, toggle
       </nav>
 
       <div className="mt-auto shrink-0 border-t border-[var(--border)] bg-[var(--surface)]">
-        <div className="flex flex-col">
-          {/* Mobile collapsed state or just stacking */}
-          <div
-            className={styles.profileContainer(isCollapsed)}
-            title={isCollapsed ? "admin — Администратор" : undefined}
-          >
-            <NavLink to="/profile" className={styles.profileLink(isCollapsed)}>
-              <div className={styles.avatarWrapper}>
-                <img
-                  src="https://picsum.photos/seed/admin/100/100"
-                  alt="Avatar"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              {!isCollapsed && (
-                <div className="text-left overflow-hidden">
-                  <div className="text-sm font-bold text-[var(--text)] leading-tight truncate">admin</div>
-                  <div className="text-[11px] font-semibold text-[var(--text-muted)] leading-tight uppercase tracking-wider truncate">Администратор</div>
-                </div>
-              )}
-            </NavLink>
-
-          </div>
-        </div>
       </div>
 
     </aside>

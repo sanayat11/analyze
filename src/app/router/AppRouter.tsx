@@ -10,7 +10,6 @@ import { AnalyticsPage } from '../../pages/AnalyticsPage';
 import { AdminPage } from '../../pages/AdminPage';
 import { EditUserPage } from '../../pages/EditUserPage';
 import { CallingPage } from '../../pages/CallsPage';
-import { ProfilePage } from '../../pages/ProfilePage';
 import { NotificationsPage } from '../../pages/NotificationsPage';
 import { ManagerDetailsPage } from '../../pages/ManagerDetailsPage';
 import { CallDetailsPage } from '../../pages/CallDetailsPage';
@@ -35,7 +34,6 @@ const AppRouter: FC = () => {
             <Route path="/admin" element={<AdminPage />} />
             <Route path="/admin/users/new" element={<EditUserPage />} />
             <Route path="/admin/users/:id" element={<EditUserPage />} />
-            <Route path="/profile" element={<ProfilePage />} />
             <Route path="/notifications" element={<NotificationsPage />} />
             <Route path="*" element={
                 <main className="flex-1 p-8 flex items-center justify-center w-full">
